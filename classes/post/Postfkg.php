@@ -44,7 +44,7 @@ class Postfkg implements PostInterface
         if (!Prefkg::$isDelete) {
             $response = [];
             $typeName = Prefkg::$typeName;
-            $komnr = "0" . substr($this->gc2User, -3);
+            $komnr = "0" . substr($this->gc2User, 3, 3);
             foreach ($rowIdsChanged as $objekt_id) {
                 $sql = "SELECT objekt_id FROM fkg.{$typeName}, dagi.kommune " .
                     "WHERE fkg.{$typeName}.objekt_id='{$objekt_id}' AND dagi.kommune.komkode='{$komnr}'" .

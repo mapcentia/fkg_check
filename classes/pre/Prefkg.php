@@ -59,7 +59,7 @@ class Prefkg implements PreInterface
     public function processDelete($arr, $typeName) : array {
         self::$typeName = $typeName;
         self::$isDelete = true;
-        $komnr = "0" . substr($this->gc2User, -3);
+        $komnr = "0" . substr($this->gc2User, 3, 3);
         $objekt_id = explode(".", $arr["Filter"]["FeatureId"]["fid"])[1];
 
         $sql = "SELECT objekt_id FROM fkg.{$typeName}, dagi.kommune " .
