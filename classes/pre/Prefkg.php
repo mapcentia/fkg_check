@@ -61,7 +61,7 @@ class Prefkg implements PreInterface
 
         $sql = "SELECT objekt_id FROM fkg.{$typeName}, dagi.kommune " .
             "WHERE fkg.{$typeName}.objekt_id='{$objekt_id}' AND dagi.kommune.komkode='{$komnr}'" .
-            " AND st_within(fkg.{$typeName}.the_geom, ST_buffer(dagi.kommune.the_geom, 1000))";
+            " AND st_within(fkg.{$typeName}.geometri, ST_buffer(dagi.kommune.the_geom, 1000))";
 
         try {
             $res = $this->db->prepare($sql);
