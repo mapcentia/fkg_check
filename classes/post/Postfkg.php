@@ -14,11 +14,8 @@ use \app\conf\wfsprocessors\fkg_check\classes\pre\Prefkg;
 class Postfkg implements PostInterface
 {
     private $logFile;
-    private $serializer;
-    private $unserializer;
     private $db;
     private $gc2User;
-    private $service;
 
     function __construct($db)
     {
@@ -47,7 +44,7 @@ class Postfkg implements PostInterface
         if (!Prefkg::$isDelete) {
             $response = [];
             $typeName = Prefkg::$typeName;
-            $komnr = "0" . substr($_SESSION["screen_name"], -3);
+            $komnr = "0" . substr($this->gc2User, -3);
             foreach ($rowIdsChanged as $objekt_id) {
                 $sql = "SELECT objekt_id FROM fkg.{$typeName}, dagi.kommune " .
                     "WHERE fkg.{$typeName}.objekt_id='{$objekt_id}' AND dagi.kommune.komkode='{$komnr}'" .

@@ -15,6 +15,9 @@ class Prefkg implements PreInterface
 {
     static public $typeName;
     static public $isDelete;
+    private $db;
+    private $gc2User;
+    private $logFile;
 
     function __construct($db)
     {
@@ -56,7 +59,7 @@ class Prefkg implements PreInterface
     public function processDelete($arr, $typeName) : array {
         self::$typeName = $typeName;
         self::$isDelete = true;
-        $komnr = "0" . substr($_SESSION["screen_name"], -3);
+        $komnr = "0" . substr($this->gc2User, -3);
         $objekt_id = explode(".", $arr["Filter"]["FeatureId"]["fid"])[1];
 
         $sql = "SELECT objekt_id FROM fkg.{$typeName}, dagi.kommune " .
