@@ -23,8 +23,18 @@ class Prefkg implements PreInterface
     {
         $this->db = $db;
         $this->gc2User = \app\inc\Input::getPath()->part(2);
-        $this->logFile = fopen(dirname(__FILE__) . "/../../../../../public/logs/fkg_" . $this->gc2User . ".log", "w");
+        $this->logFile = fopen("/var/www/geocloud2/public/logs/fkg_" . $this->gc2User . ".log", "w");
         self::$isDelete = false;
+    }
+
+    function __destruct()
+    {
+        fclose($this->logFile);
+    }
+
+    private function log($txt)
+    {
+        fwrite($this->logFile, $txt);
     }
 
     /**
@@ -57,6 +67,12 @@ class Prefkg implements PreInterface
      * @return array
      */
     public function processDelete($arr, $typeName) : array {
+
+        $response["arr"] = $arr;
+        $response["success"] = true;
+        $response["message"] = $arr;
+        return $response;
+
         self::$typeName = $typeName;
         self::$isDelete = true;
         $komnr = "0" . substr($this->gc2User, 3, 3);

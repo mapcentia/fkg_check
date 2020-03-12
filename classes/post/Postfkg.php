@@ -21,7 +21,8 @@ class Postfkg implements PostInterface
     {
         $this->db = $db;
         $this->gc2User = \app\inc\Input::getPath()->part(2);
-        $this->logFile = fopen(dirname(__FILE__) . "/../../../../../public/logs/fkg_" . $this->gc2User . ".log", "w");
+        $this->logFile = fopen("/var/www/geocloud2/public/logs/fkg_" . $this->gc2User . ".log", "w");
+        error_log($this->logFile);
     }
 
     function __destruct()
