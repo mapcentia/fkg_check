@@ -42,28 +42,30 @@ class Postfkg implements PostInterface
 
         global $rowIdsChanged;
 
-        if (!Prefkg::$isDelete) {
-            $response = [];
-            $typeName = Prefkg::$typeName;
-            $komnr = "0" . substr($this->gc2User, 3, 3);
-            foreach ($rowIdsChanged as $objekt_id) {
-                $sql = "SELECT objekt_id FROM fkg.{$typeName}, dagi.kommune " .
-                    "WHERE fkg.{$typeName}.objekt_id='{$objekt_id}' AND dagi.kommune.komkode='{$komnr}'" .
-                    " AND st_within(fkg.{$typeName}.geometri, ST_buffer(dagi.kommune.the_geom, 1000))";
+        if ($this->gc2User != "fkgmaster@fkg") {
+            if (!Prefkg::$isDelete) {
+                $response = [];
+                $typeName = Prefkg::$typeName;
+                $komnr = "0" . substr($this->gc2User, 3, 3);
+                foreach ($rowIdsChanged as $objekt_id) {
+                    $sql = "SELECT objekt_id FROM fkg.{$typeName}, dagi.kommune " .
+                        "WHERE fkg.{$typeName}.objekt_id='{$objekt_id}' AND dagi.kommune.komkode='{$komnr}'" .
+                        " AND st_within(fkg.{$typeName}.geometri, ST_buffer(dagi.kommune.the_geom, 1000))";
 
-                try {
-                    $res = $this->db->prepare($sql);
-                    $res->execute();
-                    $row = $this->db->fetchRow($res, "assoc");
-                    if (!$row) {
-                        $response["message"] = "Et eller flere objekter ligger uden for kommunegrænsen (operation: UPDATE/INSERT)";
+                    try {
+                        $res = $this->db->prepare($sql);
+                        $res->execute();
+                        $row = $this->db->fetchRow($res, "assoc");
+                        if (!$row) {
+                            $response["message"] = "Et eller flere objekter ligger uden for kommunegrænsen (operation: UPDATE/INSERT)";
+                            $response["success"] = false;
+                            return $response;
+                        }
+                    } catch (\PDOException $e) {
+                        $response["message"] = $e->getMessage();
                         $response["success"] = false;
                         return $response;
                     }
-                } catch (\PDOException $e) {
-                    $response["message"] = $e->getMessage();
-                    $response["success"] = false;
-                    return $response;
                 }
             }
         }

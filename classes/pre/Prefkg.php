@@ -42,61 +42,61 @@ class Prefkg implements PreInterface
      * @param $arr
      * @return array
      */
-    public function processUpdate($arr, $typeName) : array {
+    public function processUpdate($arr, $typeName): array
+    {
         self::$typeName = $typeName;
         $res["arr"] = $arr;
         $res["success"] = true;
         $res["message"] = $arr;
-        return $res;    }
+        return $res;
+    }
 
     /**
      * The main function called by the WFS prior to the single INSERT transaction.
      * @param $arr
      * @return array
      */
-    public function processInsert($arr, $typeName) : array {
+    public function processInsert($arr, $typeName): array
+    {
         self::$typeName = $typeName;
         $res["arr"] = $arr;
         $res["success"] = true;
         $res["message"] = $arr;
-        return $res;    }
+        return $res;
+    }
 
     /**
      * The main function called by the WFS prior to the single DELETE transaction.
      * @param $arr
      * @return array
      */
-    public function processDelete($arr, $typeName) : array {
-
-        $response["arr"] = $arr;
-        $response["success"] = true;
-        $response["message"] = $arr;
-        return $response;
-
+    public function processDelete($arr, $typeName): array
+    {
         self::$typeName = $typeName;
         self::$isDelete = true;
-        $komnr = "0" . substr($this->gc2User, 3, 3);
-        $objekt_id = explode(".", $arr["Filter"]["FeatureId"]["fid"])[1];
+        if ($this->gc2User != "fkgmaster@fkg") {
+            $komnr = "0" . substr($this->gc2User, 3, 3);
+            $objekt_id = explode(".", $arr["Filter"]["FeatureId"]["fid"])[1];
 
-        $sql = "SELECT objekt_id FROM fkg.{$typeName}, dagi.kommune " .
-            "WHERE fkg.{$typeName}.objekt_id='{$objekt_id}' AND dagi.kommune.komkode='{$komnr}'" .
-            " AND st_within(fkg.{$typeName}.geometri, ST_buffer(dagi.kommune.the_geom, 1000))";
+            $sql = "SELECT objekt_id FROM fkg.{$typeName}, dagi.kommune " .
+                "WHERE fkg.{$typeName}.objekt_id='{$objekt_id}' AND dagi.kommune.komkode='{$komnr}'" .
+                " AND st_within(fkg.{$typeName}.geometri, ST_buffer(dagi.kommune.the_geom, 1000))";
 
-        try {
-            $res = $this->db->prepare($sql);
-            $res->execute();
-            $row = $this->db->fetchRow($res, "assoc");
-            if (!$row) {
-                $response["message"] = "Et eller flere objekter ligger uden for kommunegrænsen (Operation: DELETE)";
+            try {
+                $res = $this->db->prepare($sql);
+                $res->execute();
+                $row = $this->db->fetchRow($res, "assoc");
+                if (!$row) {
+                    $response["message"] = "Et eller flere objekter ligger uden for kommunegrænsen (Operation: DELETE)";
+                    $response["success"] = false;
+                    return $response;
+                }
+            } catch (\PDOException $e) {
+                $response["message"] = $e->getMessage();
                 $response["success"] = false;
                 return $response;
             }
-        } catch (\PDOException $e) {
-            $response["message"] = $e->getMessage();
-            $response["success"] = false;
-            return $response;
         }
-
         $response["arr"] = $arr;
         $response["success"] = true;
         $response["message"] = $arr;
