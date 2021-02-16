@@ -6,10 +6,10 @@
  *
  */
 
-namespace app\conf\wfsprocessors\fkg_check\classes\pre;
+namespace app\wfs\processors\fkg_check\classes\pre;
 
+use app\wfs\processors\PreInterface;
 
-use app\conf\wfsprocessors\PreInterface;
 
 class Prefkg implements PreInterface
 {

@@ -6,10 +6,11 @@
  *
  */
 
-namespace app\conf\wfsprocessors\fkg_check\classes\post;
+namespace app\wfs\processors\fkg_check\classes\post;
 
-use \app\conf\wfsprocessors\PostInterface;
-use \app\conf\wfsprocessors\fkg_check\classes\pre\Prefkg;
+use app\wfs\processors\PostInterface;
+use app\wfs\processors\fkg_check\classes\pre\Prefkg;
+
 
 class Postfkg implements PostInterface
 {
